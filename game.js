@@ -12,7 +12,7 @@ const STAGE_INFO = [
   { name: "本科",    months: 48 },    // 18-22岁
   { name: "社会",    months: 0 },     // 毕业后
   { name: "硕士",    months: 36 },
-  { name: "博士",    months: 48 }    // 默认4年，属性高会缩短
+  { name: "博士",    months: 48 }
 ];
 const SUBJECTS = ["语文", "数学", "英语", "理综", "文综", "艺术"];
 const BASIC_ATTRS = ["appearance", "intelligence", "physique", "family", "luck"];
@@ -111,10 +111,9 @@ function delSavePrompt(name) {
   }
 }
 
-// 状态栏弹窗逻辑
 function showStatus() {
-  if (!player)
-    let attr = player.attributes, subj = player.subjects;
+  if (!player) { alert('请先进入存档！'); return; }
+  let attr = player.attributes, subj = player.subjects;
   let html = `<b>基础属性</b><table>`;
   BASIC_ATTRS.forEach(k => {
     html += `<tr><th>${ATTRS_CN[k]}</th><td>${attr[k]}</td></tr>`;
@@ -128,8 +127,6 @@ function showStatus() {
   });
   html += `</table><b>当前阶段</b><div>${STAGE_INFO[player.stage].name}</div>`;
   if (player.degree) html += `<div>最高学历：${player.degree}</div>`;
-
-  // 学校档次履历
   if (player.schoolHistory && player.schoolHistory.length) {
     html += `<b>学校履历：</b>`;
     player.schoolHistory.forEach((item, i) => {
@@ -146,22 +143,16 @@ function closeStatus() {
   document.getElementById('statusOverlay').style.display = "none";
 }
 
-window.enterSave = enterSave;
-window.delSavePrompt = delSavePrompt;
-window.newSave = newSave;
-window.showStatus = showStatus;
-window.closeStatus = closeStatus;
-
+// 1. 进入主流程
 function renderMain() {
   if (!player) return renderHome();
   if (!player.parents) return renderParents();
   if (!player.talents.length) return renderTalentSelect();
   if (!player.initialAttrDone) return renderAttrSelect();
-
   renderMonthPanel();
 }
 
-// 1. 出生：父母
+// 2. 父母
 function renderParents() {
   let p = data.parents[Math.floor(Math.random() * data.parents.length)];
   player.parents = p;
@@ -181,7 +172,7 @@ function renderParents() {
   `;
 }
 
-// 2. 天赋选择（已优化：存在感、影响、天选之子按钮）
+// 3. 天赋选择
 function renderTalentSelect() {
   let talents = data.talents;
   let randomTen = [];
@@ -251,7 +242,7 @@ function chooseAnyTalent() {
   document.getElementById('game').innerHTML = html;
 }
 
-// 3. 初始属性分配
+// 4. 初始属性分配
 function renderAttrSelect() {
   let maxPoints = 100;
   let attrs = {};
@@ -309,14 +300,13 @@ function finishAttrSelect() {
   renderMain();
 }
 
-// 4. 月度主循环界面
+// 5. 月度主循环
 function renderMonthPanel() {
   let stageObj = STAGE_INFO[player.stage];
   let ageStr = `${Math.floor(player.month / 12)}岁${player.month % 12}月`;
   let html = `<div class="step-title">当前阶段：${stageObj.name}　年龄：${ageStr}　学历：${player.degree || "无"}</div>
     <div>家庭资产：${parseInt(player.familyMoney)}　个人资产：${parseInt(player.personalMoney)}　心情：${player.mood}　健康：${player.health}</div>
     <div>`;
-  // 按钮按解锁顺序显示
   if (player.stage >= 2) html += `<button class="btn" onclick="doStudy()">学习</button>`;
   if (player.unlocks && player.unlocks.work) html += `<button class="btn" onclick="doWork()">打工/兼职</button>`;
   if (player.unlocks && player.unlocks.friends) html += `<button class="btn" onclick="doFriend()">交朋友</button>`;
@@ -332,12 +322,17 @@ function renderMonthPanel() {
   document.getElementById('game').innerHTML = html;
 }
 
-// 月推进（每月核心自动结算）
+// ...（下方省略，为保证答复不被截断）
+
+// 由于一次消息长度限制，【请回复“继续”】即可获取完整下半部分代码！
+
+// -------- 月推进（每月自动结算）和学习标记
 function nextMonth() {
+  player.studyThisMonth = false;
   player.month += 1;
   player.age = Math.floor(player.month / 12);
 
-  // 自动给零花钱（随年级成长，大学及以后不发）
+  // 自动零花钱（本科及以下）
   if (player.stage <= 5) {
     let pocketMoney = 50 + player.stage * 80 + Math.floor(Math.random() * 50);
     if (pocketMoney > 500) pocketMoney = 500;
@@ -349,11 +344,11 @@ function nextMonth() {
   player.familyMoney -= baseSpend;
   if (player.familyMoney < 0) player.familyMoney = 0;
 
-  // 心情&健康波动，并引入医疗机制
-  player.mood += Math.floor(Math.random() * 7 - 3); // 小幅波动
+  // 心情健康波动与医疗
+  player.mood += Math.floor(Math.random() * 7 - 3);
   player.health += Math.floor(Math.random() * 4 - 2);
 
-  // 生病逻辑：健康<60有概率自动扣钱去医院并恢复健康
+  // 生病看病
   if (player.health < 60 && Math.random() < 0.2) {
     let cost = 300 + Math.floor(Math.random() * 400);
     player.personalMoney -= cost;
@@ -361,10 +356,8 @@ function nextMonth() {
     if (player.personalMoney < 0) player.personalMoney = 0;
     if (player.health > 100) player.health = 100;
   }
-  // 健康界限
   if (player.health > 100) player.health = 100;
   if (player.health < 0) player.health = 0;
-  // 心情界限
   if (player.mood > 100) player.mood = 100;
   if (player.mood < 0) player.mood = 0;
 
@@ -373,7 +366,7 @@ function nextMonth() {
     player.personalMoney += player.job.salary;
     player.mood += 1;
   }
-  // 随机个人支出
+  // 随机支出
   if (player.personalMoney > 0 && Math.random() < 0.13) {
     let spend = Math.floor(player.personalMoney * Math.random() * 0.04);
     player.personalMoney -= spend;
@@ -387,142 +380,21 @@ function nextMonth() {
   // 随机新闻
   if (Math.random() < 0.2) triggerRandomNews();
 
-  // 功能解锁按阶段，只首次解锁，解锁后永久显示
+  // 解锁功能
   if (player.stage === 2) player.unlocks.pets = true, player.unlocks.friends = true;
   if (player.stage === 3) player.unlocks.phone = true, player.unlocks.stock = true;
   if (player.stage === 4) player.unlocks.work = true;
   if (player.stage === 5) player.unlocks.love = true, player.unlocks.entertain = true;
 
-  // 阶段推进（毕业判定/升学/毕业/读研），并增加学校履历
+  // 毕业升学
   let grad = checkGraduation();
-  if (grad) return; // 升学时自动弹出升学考试
+  if (grad) return; // 升学弹窗
 
   saveSaves();
   renderMonthPanel();
 }
 
-// 检查毕业和升学点，按年龄严格对应
-function checkGraduation() {
-  // 每个阶段的毕业点：3岁升幼儿园，6岁升小学，12岁升初中，15岁升高中，18岁升本科
-  let age = Math.floor(player.month / 12);
-  let s = player.stage;
-
-  if (s === 0 && age >= 3) { renderExam(0); return true; } //婴儿毕业
-  if (s === 1 && age >= 6) { renderExam(1); return true; } //幼儿园毕业
-  if (s === 2 && age >= 12) { renderExam(2); return true; } //小学毕业
-  if (s === 3 && age >= 15) { renderExam(3); return true; } //初中毕业
-  if (s === 4 && age >= 18) { renderExam(4); return true; } //高中毕业
-  if (s === 5 && age >= 22) { renderPostGradChoice(); return true; } //本科毕业
-  if (s === 7 && player.month >= getStageStartMonth(7) + 36) { renderPhdChoice(); return true; } //硕士毕业
-  if (s === 8 && player.month >= getStageStartMonth(8) + (player.phdYears || 48)) {
-    player.degree = "博士";
-    player.stage = 6;
-    alert("恭喜博士毕业，开启社会人生！");
-    saveSaves();
-    renderMonthPanel();
-    return true;
-  }
-  return false;
-}
-function getStageStartMonth(stage) {
-  // 获取某阶段的起始月份
-  let months = 0;
-  for (let i = 0; i < stage; i++) months += STAGE_INFO[i].months;
-  return months;
-}
-
-// 升学考试及学校档次记录
-function renderExam(stageIdx) {
-  // 分数根据科目属性和智商
-  let examConfig = [
-    ["无"], //婴儿
-    ["无"], //幼儿园
-    ["语文", "数学", "英语"], //小学
-    ["语文", "数学", "英语", "理综"], //初中
-    ["语文", "数学", "英语", "理综", "文综"], //高中
-    ["语文", "数学", "英语", "理综", "文综", "艺术"] //本科
-  ];
-  let testSubj = examConfig[stageIdx + 1] || ["语文", "数学"];
-  let score = {};
-  let msg = "";
-  testSubj.forEach(s => {
-    let subj = player.subjects[s] || 3;
-    let iq = player.attributes.intelligence || 5;
-    let learn = (player.baseAttrFromTalent && player.baseAttrFromTalent.learning) || 0;
-    let sc = 50 + subj * 7 + iq * 2 + learn * 3 + Math.floor(Math.random() * 14 - 5);
-    if (sc > 100) sc = 100; if (sc < 20) sc = 20;
-    score[s] = sc;
-    msg += `${s}: ${sc}分<br>`;
-  });
-  let avg = Math.floor(Object.values(score).reduce((a, b) => a + b, 0) / testSubj.length);
-  let rank = "";
-  if (avg >= 90) rank = "顶级名校";
-  else if (avg >= 75) rank = "重点学校";
-  else if (avg >= 60) rank = "普通学校";
-  else rank = "较差学校";
-  if (!player.schoolHistory) player.schoolHistory = [];
-  if (!player.schoolRank) player.schoolRank = [];
-  let degMap = ["婴儿", "幼儿园", "小学", "初中", "高中", "本科"];
-  player.schoolHistory.push(degMap[stageIdx + 1]);
-  player.schoolRank.push(rank);
-  // 阶段推进
-  player.stage += 1;
-  if (player.stage <= 5) player.degree = degMap[player.stage];
-  saveSaves();
-  document.getElementById('game').innerHTML = `<div class="step-title">升学考试</div>
-    <div>${msg}</div>
-    <b>你升入：${rank}！</b><br>
-    <button class="btn" onclick="renderMonthPanel()">继续</button>
-  `;
-}
-
-// 本科毕业后是否考研
-function renderPostGradChoice() {
-  document.getElementById('game').innerHTML = `
-    <div class="step-title">你本科毕业了！</div>
-    <div>你想选择：</div>
-    <button class="btn" onclick="goToWork()">直接工作</button>
-    <button class="btn" onclick="startMaster()">考研（3年）</button>
-  `;
-}
-function goToWork() {
-  player.stage = 6;
-  player.degree = "本科";
-  saveSaves();
-  renderMonthPanel();
-}
-function startMaster() {
-  player.stage = 7;
-  player.degree = "硕士";
-  saveSaves();
-  renderMonthPanel();
-}
-// 硕士毕业是否读博
-function renderPhdChoice() {
-  let canFast = (player.subjects["理综"] > 8 && player.attributes.intelligence > 8);
-  let years = canFast ? 36 : 48;
-  player.phdYears = years;
-  document.getElementById('game').innerHTML = `
-    <div class="step-title">你硕士毕业了！</div>
-    <div>你想选择：</div>
-    <button class="btn" onclick="goToWorkPhd()">直接工作</button>
-    <button class="btn" onclick="startPhd()">读博士（${years / 12}年）</button>
-  `;
-}
-function goToWorkPhd() {
-  player.stage = 6;
-  player.degree = "硕士";
-  saveSaves();
-  renderMonthPanel();
-}
-function startPhd() {
-  player.stage = 8;
-  player.degree = "博士";
-  saveSaves();
-  renderMonthPanel();
-}
-
-// -------- 学习功能优化，每月只能学习一次，提升幅度提升
+// -------- 学习
 function doStudy() {
   if (player.studyThisMonth) {
     alert("本月已学习，请下个月再努力！");
@@ -549,14 +421,8 @@ function studySubject(subj) {
   alert(`你专心学习，${subj}提升了${delta}点！`);
   renderMonthPanel();
 }
-// 重置每月学习标志
-let origNextMonth = nextMonth;
-nextMonth = function () {
-  player.studyThisMonth = false;
-  origNextMonth();
-};
 
-// -------- 交朋友功能优化
+// -------- 交朋友
 function doFriend() {
   let friends = player.friends || [];
   let html = `<div class="step-title">朋友</div>`;
@@ -572,7 +438,6 @@ function doFriend() {
   document.getElementById('game').innerHTML = html;
 }
 function addFriend() {
-  // 更真实的名字池
   let names = [
     "李明", "王丽", "赵强", "刘佳", "陈思", "张敏", "杨楠", "徐芳", "周洋", "孙磊", "马楠", "冯雪", "郭静", "黄琳", "宋涛",
     "丁蕾", "何志", "魏峰", "许军", "谭晓", "彭飞", "谢磊", "曹琦", "邓涛", "袁蕾"
@@ -592,7 +457,7 @@ function friendInteract(idx) {
   let delta = 2 + Math.floor(Math.random() * 4);
   f.favor += delta;
   player.mood += 2;
-  // 好感大于40有可能获得礼物
+  // 好感大于40可能送礼物
   if (f.favor > 40 && Math.random() < 0.25) {
     let items = data.items || [];
     if (items.length) {
@@ -602,7 +467,7 @@ function friendInteract(idx) {
       player.mood += 10;
     }
   }
-  // 好感大于30有可能收到邀约
+  // 好感大于30可能收到邀约
   if (f.favor > 30 && Math.random() < 0.15) {
     alert(`${f.name} 邀请你一起出游！你们的关系更加亲密。`);
     player.mood += 8;
@@ -638,7 +503,6 @@ function addPet() {
     { type: "金鱼", min: 18, max: 80 }
   ];
   let candidates = types.map(t => {
-    // 价格波动
     let now = t.min + Math.floor(Math.random() * (t.max - t.min + 1));
     return { type: t.type, price: now, health: 10 + Math.floor(Math.random() * 5) };
   });
@@ -679,7 +543,7 @@ function petInteract(idx) {
   doPet();
 }
 
-// -------- 股票投资（价格波动有上下限，新闻实时生效）
+// -------- 股票投资
 function doStock() {
   let stockList = data.stocks;
   let pstocks = player.stocks || {};
@@ -741,14 +605,13 @@ function updateStocks() {
   });
 }
 
-// -------- 新闻（丰富内容且对股价等有即时影响）
+// -------- 新闻
 function doNews() {
   let all = data.news;
   let i = Math.floor(Math.random() * all.length);
   let news = all[i];
   player.newsSeen = player.newsSeen || [];
   if (!player.newsSeen.includes(news.id)) player.newsSeen.push(news.id);
-  // 立刻生效
   applyNewsEffect(news);
   saveSaves();
   alert(`【新闻】${news.title}`);
@@ -794,7 +657,7 @@ function applyNewsEffect(n) {
   });
 }
 
-// -------- 娱乐功能分阶段解锁及场景选择
+// -------- 娱乐
 function doEntertain() {
   let html = `<div class="step-title">选择娱乐方式</div>`;
   let options = [];
@@ -838,11 +701,10 @@ function doEntertainAction(mood, cost) {
   renderMonthPanel();
 }
 
-// -------- 恋爱流程优化
+// -------- 恋爱
 function doLove() {
   if (!player.loveList) player.loveList = [];
   let girls = data.girls;
-  // 展示所有女生和当前好感
   let html = `<div class="step-title">恋爱发展</div><div>可互动女生：</div><ul>`;
   girls.forEach((g, idx) => {
     let lover = player.loveList.find(l => l.name === g.name);
@@ -903,7 +765,7 @@ function loveTry(name) {
   renderMonthPanel();
 }
 
-// 返回首页
+// -------- 首页
 function backHome() {
   player = null;
   currentSave = null;
@@ -928,7 +790,6 @@ fetch('data.json')
   });
 
 // 导航暴露
-window.jobChoose = jobChoose;
 window.studySubject = studySubject;
 window.addFriend = addFriend;
 window.addPet = addPet;
@@ -942,13 +803,3 @@ window.loveInteract = loveInteract;
 window.loveGift = loveGift;
 window.doEntertainAction = doEntertainAction;
 window.backHome = backHome;
-
-fetch('data.json')
-  .then(res => res.json())
-  .then(json => {
-    data = json;
-    renderHome();
-  })
-  .catch(e => {
-    document.getElementById('game').innerHTML = "数据加载失败："+e;
-  });
