@@ -1,27 +1,51 @@
 {
+  "schools": {
+    "kindergarten": ["市实验幼儿园", "区重点幼儿园", "普通幼儿园"],
+    "primary": ["清华附小", "市重点小学", "普通小学"],
+    "middle": ["市一中", "区重点中学", "普通初中"],
+    "high": ["省重点高中", "市重点高中", "普通高中"],
+    "college": ["清华大学", "985重点大学", "普通本科", "民办院校"]
+  },
+  "friends": [
+    "王子文", "李天宇", "赵嘉怡", "宋晨曦", "周泽宇", "张思琪", "许家宁",
+    "马俊豪", "陈雅丽", "杜彦祖", "范晓彤", "韩宇航", "蒋诗雨", "梁思远",
+    "李安琪", "罗凯文", "梅思睿", "彭宇辰", "邱子涵", "沈乐然"
+  ],
+  "petMarket": [
+    { "type": "橘猫", "price": 800, "min": 500, "max": 2000 },
+    { "type": "金毛犬", "price": 2000, "min": 1200, "max": 3500 },
+    { "type": "仓鼠", "price": 80, "min": 30, "max": 180 },
+    { "type": "鹦鹉", "price": 300, "min": 150, "max": 600 },
+    { "type": "乌龟", "price": 120, "min": 50, "max": 300 }
+  ],
   "stocks": [
-    { "id": 1, "name": "长江电力", "price": 10.0, "volatility": 0.15, "desc": "水电蓝筹" },
-    { "id": 2, "name": "贵州茅台", "price": 1800.0, "volatility": 0.10, "desc": "白酒龙头" },
-    { "id": 3, "name": "宁德时代", "price": 220.0, "volatility": 0.20, "desc": "新能源电池" },
-    { "id": 4, "name": "中国平安", "price": 45.0, "volatility": 0.12, "desc": "金融保险" },
-    { "id": 5, "name": "比亚迪", "price": 230.0, "volatility": 0.18, "desc": "新能源车企" }
-  ],
-  "items": [
-    { "id": 1, "name": "豪车", "price": 500000, "desc": "提升身份，增加心情", "mood": 30 },
-    { "id": 2, "name": "环球旅游", "price": 80000, "desc": "开阔视野，放松心情", "mood": 20 },
-    { "id": 3, "name": "游戏主机", "price": 3000, "desc": "宅家娱乐，提升快乐", "mood": 10 }
-  ],
-  "girls": [
-    { "id": 1, "name": "小雅", "desc": "温柔知性", "favor": 0 },
-    { "id": 2, "name": "思思", "desc": "活泼可爱", "favor": 0 },
-    { "id": 3, "name": "可馨", "desc": "元气少女", "favor": 0 }
+    { "id": 1, "name": "长江电力", "price": 10.0, "min": 5, "max": 30, "volatility": 0.12, "desc": "水电蓝筹" },
+    { "id": 2, "name": "贵州茅台", "price": 1800.0, "min": 1000, "max": 3000, "volatility": 0.08, "desc": "白酒龙头" },
+    { "id": 3, "name": "宁德时代", "price": 220.0, "min": 100, "max": 400, "volatility": 0.18, "desc": "新能源电池" },
+    { "id": 4, "name": "中国平安", "price": 45.0, "min": 30, "max": 80, "volatility": 0.1, "desc": "金融保险" },
+    { "id": 5, "name": "比亚迪", "price": 230.0, "min": 100, "max": 400, "volatility": 0.15, "desc": "新能源车企" }
   ],
   "news": [
-    { "id": 1, "title": "经济向好，消费升级", "effect": "money+10000;stocks:all+3%" },
-    { "id": 2, "title": "科技创新热潮，新能源暴涨", "effect": "stock:宁德时代+10%;stock:比亚迪+10%" },
-    { "id": 3, "title": "白酒行业遇冷，茅台下跌", "effect": "stock:贵州茅台-8%" },
-    { "id": 4, "title": "保险业利好", "effect": "stock:中国平安+5%" },
-    { "id": 5, "title": "股市整体低迷", "effect": "stocks:all-5%" }
+    { "id": 1, "title": "经济回暖，消费电子销售井喷", "effect": "money+12000;stocks:all+4%" },
+    { "id": 2, "title": "白酒板块遭遇大幅调整", "effect": "stock:贵州茅台-9%" },
+    { "id": 3, "title": "新能源热潮，宁德时代、比亚迪大涨", "effect": "stock:宁德时代+10%;stock:比亚迪+8%" },
+    { "id": 4, "title": "股市整体低迷，投资需谨慎", "effect": "stocks:all-5%" },
+    { "id": 5, "title": "科技创新驱动产业升级", "effect": "stocks:all+2%" },
+    { "id": 6, "title": "暴雨影响多地，长江电力受益", "effect": "stock:长江电力+8%" },
+    { "id": 7, "title": "保险行业迎来新规利好", "effect": "stock:中国平安+7%" },
+    { "id": 8, "title": "宠物经济火爆，宠物价格上涨", "effect": "mood+5;money-500" },
+    { "id": 9, "title": "教育部严查学业成绩造假", "effect": "mood-5" },
+    { "id": 10, "title": "暑假来临，游乐园生意火爆", "effect": "mood+8;money-300" },
+    { "id": 11, "title": "房地产调控升级，部分家庭财富缩水", "effect": "money-3000" },
+    { "id": 12, "title": "健康宣传周，医院挂号优惠", "effect": "mood+3" },
+    { "id": 13, "title": "外卖行业兴起，大学生兼职新选择", "effect": "money+600" },
+    { "id": 14, "title": "校运会举办，体质优异学生获奖学金", "effect": "mood+8;money+2000" },
+    { "id": 15, "title": "考试临近，学生压力增大", "effect": "mood-6" },
+    { "id": 16, "title": "智能手机普及，信息获取更便捷", "effect": "mood+2" },
+    { "id": 17, "title": "流感高发季，健康注意！", "effect": "health-8" },
+    { "id": 18, "title": "社会活动丰富，交友机会大增", "effect": "mood+6" },
+    { "id": 19, "title": "大学生创新创业基金发放", "effect": "money+8000" },
+    { "id": 20, "title": "国际赛事举办，旅游业受益", "effect": "mood+5;money-700" }
   ],
   "talents": [
     { "id": 1, "name": "学霸", "desc": "学习能力大幅提升", "type": "史诗", "effect": { "learning": 3 } },
@@ -69,5 +93,32 @@
     { "father": "作家", "mother": "音乐老师", "family_income": "中", "desc": "文化氛围浓厚，艺术环境" },
     { "father": "科研人员", "mother": "律师", "family_income": "高", "desc": "家教严格，学业压力大" },
     { "father": "失业", "mother": "临时工", "family_income": "极低", "desc": "家庭拮据，环境艰苦" }
+  ],
+  "jobs": [
+    { "name": "服务员", "min": { "physique": 5 }, "salary": 3000 },
+    { "name": "快递员", "min": { "physique": 7 }, "salary": 4500 },
+    { "name": "家教", "min": { "intelligence": 7 }, "salary": 5200 },
+    { "name": "助教", "min": { "intelligence": 8 }, "salary": 7000 },
+    { "name": "实习生", "min": { "intelligence": 6 }, "salary": 3500 },
+    { "name": "自媒体", "min": { "appearance": 7 }, "salary": 5000 },
+    { "name": "餐饮厨工", "min": { "physique": 5 }, "salary": 3200 },
+    { "name": "图书管理员", "min": { "intelligence": 5 }, "salary": 3800 },
+    { "name": "家政助理", "min": { "physique": 6 }, "salary": 3400 },
+    { "name": "外卖员", "min": { "physique": 6 }, "salary": 4200 },
+    { "name": "摄影师助理", "min": { "appearance": 6 }, "salary": 3900 },
+    { "name": "舞蹈教练助理", "min": { "physique": 8 }, "salary": 5000 },
+    { "name": "文员", "min": { "intelligence": 7 }, "salary": 4500 }
+  ],
+  "girls": [
+    { "id": 1, "name": "小雅", "desc": "温柔知性", "favor": 0 },
+    { "id": 2, "name": "思思", "desc": "活泼可爱", "favor": 0 },
+    { "id": 3, "name": "可馨", "desc": "元气少女", "favor": 0 },
+    { "id": 4, "name": "琳琳", "desc": "甜美温柔", "favor": 0 }
+  ],
+  "items": [
+    { "id": 1, "name": "豪车", "price": 500000, "desc": "提升身份，增加心情", "mood": 30 },
+    { "id": 2, "name": "环球旅游", "price": 80000, "desc": "开阔视野，放松心情", "mood": 20 },
+    { "id": 3, "name": "游戏主机", "price": 3000, "desc": "宅家娱乐，提升快乐", "mood": 10 },
+    { "id": 4, "name": "智能手机", "price": 4000, "desc": "开启智能生活", "mood": 5 }
   ]
 }
