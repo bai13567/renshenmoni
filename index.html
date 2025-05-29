@@ -21,19 +21,46 @@
     .step-title { font-size:1.28em; font-weight:bold; margin-bottom:10px;}
     .card { border-radius: 8px; background: #f4f8fa; border: 1px solid #ccc; margin:13px 0; padding:16px 12px;}
     ul { padding-left: 19px; }
-    #statusOverlay { display:none; position:fixed; left:0;top:0;right:0;bottom:0; z-index:9999; background:rgba(0,0,0,0.20);}
-    #statusBox { background: #fff; border-radius: 16px; box-shadow: 0 2px 18px #3333; padding:28px 32px; max-width: 420px; margin: 90px auto; position:relative;}
-    #statusClose { position:absolute;top:12px;right:18px;font-size:2.1em;cursor:pointer;color:#666; width: 38px; height: 38px; text-align:center; line-height:38px; border-radius:50%; background: #eee; font-weight:bold; border:2px solid #aaa; transition: background 0.2s;}
+    /* 状态栏弹窗样式 */
+    #statusOverlay {
+      display:none; position:fixed; left:0;top:0;right:0;bottom:0; z-index:9999;
+      background:rgba(0,0,0,0.20);
+    }
+    #statusBox {
+      background: #fff; border-radius: 16px; box-shadow: 0 2px 18px #3333; padding:28px 32px;
+      max-width: 420px; margin: 90px auto; position:relative;
+    }
+    #statusClose {
+      position:absolute;top:12px;right:18px;font-size:2.1em;cursor:pointer;color:#666;
+      width: 38px; height: 38px; text-align:center; line-height:38px;
+      border-radius:50%; background: #eee; font-weight:bold; border:2px solid #aaa;
+      transition: background 0.2s;
+    }
     #statusClose:hover { background: #ffeaea; color:#c11;}
     #statusBox table {width:100%;margin-top:9px;}
     #statusBox th, #statusBox td {padding:4px 9px; text-align:left;}
-    #showStatusBtn { position: fixed; top: 18px; right: 18px; z-index: 9999; background: #0c5; color: #fff; font-weight: bold; padding: 8px 24px; border-radius: 20px; border: none; cursor:pointer; box-shadow: 0 2px 8px #0002; font-size: 1.12em;}
+    #showStatusBtn {
+      position: fixed; top: 18px; right: 18px; z-index: 9999;
+      background: #0c5; color: #fff; font-weight: bold; padding: 8px 24px; border-radius: 20px; border: none;
+      cursor:pointer; box-shadow: 0 2px 8px #0002; font-size: 1.12em;
+    }
     #showStatusBtn:hover { background: #38c274; }
     @media (max-width: 700px) {
       #game { padding: 12px 2px 40px 2px; min-height: 460px;}
       .btn { min-width:80px; min-height:36px; font-size:1.02em; }
       #statusBox {padding:12px 8px;}
     }
+    /* 验证码弹窗 */
+    #verifyOverlay {
+      display:none; position:fixed; left:0;top:0;right:0;bottom:0; z-index:10001;
+      background:rgba(0,0,0,0.30);
+    }
+    #verifyBox {
+      background: #fff; border-radius: 16px; box-shadow: 0 2px 20px #3338; padding:30px 40px; max-width: 340px; margin: 120px auto; position:relative;
+      text-align: center;
+    }
+    #verifyBox input { width: 90%; font-size:1.15em; padding:6px 8px; margin:14px 0 12px 0;}
+    #verifyBox button { margin:0 8px;}
   </style>
 </head>
 <body>
@@ -45,6 +72,57 @@
       <div id="statusContent">状态加载中...</div>
     </div>
   </div>
+  <div id="verifyOverlay">
+    <div id="verifyBox">
+      <div class="step-title">请输入验证码</div>
+      <input id="verifyInput" type="text" placeholder="请输入验证码">
+      <div>
+        <button class="btn" onclick="verifyCode()">验证</button>
+        <button class="btn btn-small" onclick="showForget()">忘记验证码</button>
+      </div>
+      <div id="verifyError" style="color:#d33;min-height:22px;"></div>
+      <div id="forgetBox" style="display:none;margin-top:18px;">
+        <input id="forgetInput" type="password" placeholder="输入备用密码">
+        <button class="btn btn-small" onclick="verifyForget()">确定</button>
+      </div>
+    </div>
+  </div>
   <script src="game.js"></script>
+  <script>
+    // 验证逻辑
+    function showVerify() {
+      document.getElementById('verifyOverlay').style.display = 'block';
+      document.getElementById('verifyInput').value = '';
+      document.getElementById('verifyError').innerText = '';
+      document.getElementById('forgetBox').style.display = 'none';
+    }
+    function verifyCode() {
+      var code = document.getElementById('verifyInput').value.trim();
+      if (code === 'baizhou666') {
+        localStorage.setItem('rsmoni_verified', '1');
+        document.getElementById('verifyOverlay').style.display = 'none';
+      } else {
+        document.getElementById('verifyError').innerText = '验证码错误！';
+      }
+    }
+    function showForget() {
+      document.getElementById('forgetBox').style.display = '';
+      document.getElementById('verifyError').innerText = '';
+      document.getElementById('forgetInput').value = '';
+    }
+    function verifyForget() {
+      var pwd = document.getElementById('forgetInput').value.trim();
+      if (pwd === '12731273z') {
+        localStorage.setItem('rsmoni_verified', '1');
+        document.getElementById('verifyOverlay').style.display = 'none';
+      } else {
+        document.getElementById('verifyError').innerText = '备用密码错误！';
+      }
+    }
+    // 首次打开验证
+    if (!localStorage.getItem('rsmoni_verified')) {
+      setTimeout(showVerify, 50);
+    }
+  </script>
 </body>
 </html>
