@@ -763,3 +763,13 @@ window.addPet = addPet;
 window.buyStock = buyStock;
 window.sellStock = sellStock;
 window.loveTry = loveTry;
+
+fetch('data.json')
+  .then(res => res.json())
+  .then(json => {
+    data = json;
+    renderHome();
+  })
+  .catch(e => {
+    document.getElementById('game').innerHTML = "数据加载失败："+e;
+  });
