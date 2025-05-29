@@ -9,7 +9,7 @@
   ],
   "news": [
     { "id": 1, "title": "经济向好，消费升级", "effect": "money+10000" }
-  ]
+  ],
   "talents": [
     { "id": 1, "name": "学霸", "desc": "学习能力大幅提升", "type": "史诗", "effect": { "intelligence": 3 } },
     { "id": 2, "name": "富二代", "desc": "家境极好，初始金钱+20w", "type": "传说", "effect": { "money": 200000 } },
