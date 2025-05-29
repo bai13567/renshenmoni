@@ -4,7 +4,6 @@ let currentSave = null;
 let player = null;
 let step = 'home';
 
-// 阶段与学校信息
 const STAGE_LIST = [
   "婴儿", "幼儿园", "小学", "初中", "高中", "大学", "社会人生"
 ];
@@ -33,8 +32,6 @@ const SCHOOL_INFO = [
     {name:"二本大学", min:70},
     {name:"大专", min:60},
     {name:"落榜复读", min:0}
-  ],
-  [ // 大学毕业——社会人生无升学
   ]
 ];
 
@@ -277,42 +274,7 @@ function renderMainGame() {
   renderLifeStage();
 }
 
-window.enterSave = enterSave;
-window.delSavePrompt = delSavePrompt;
-window.newSave = newSave;
-window.randomParents = randomParents;
-window.nextStep = nextStep;
-window.toggleTalent = toggleTalent;
-window.renderTalent = renderTalent;
-window.confirmTalent = confirmTalent;
-window.confirmAttr = confirmAttr;
-window.backHome = backHome;
-window.resetGame = function() {
-  if(!confirm("确定要重开本存档的人生吗？")) return;
-  player.stage = 'born';
-  player.openData = {};
-  saveSaves();
-  step = 'born';
-  renderBorn();
-}
-
-// --- 加载入口 ---
-fetch('data.json')
-  .then(res => res.json())
-  .then(json => {
-    data = json;
-    renderHome();
-  });
-
-function nextStep(s) {
-  step = s;
-  if(s === 'parents') renderParents();
-  if(s === 'talent') renderTalent();
-  if(s === 'attr') renderAttr();
-  if(s === 'main') renderMainGame();
-}
-
-// 阶段推进与主流程
+// 只在阶段1~4（即进入小学、初中、高中、大学）各触发一次升学
 function renderLifeStage() {
   player.stage = 'main';
   saveSaves();
@@ -321,16 +283,16 @@ function renderLifeStage() {
   let stage = od.currentStage;
   let stageName = STAGE_LIST[stage];
 
-  // 必须升学阶段
-  if(stage > 0 && stage <= 5 && !od[`school${stage}`]) {
-    startExam(stage-1);
+  // 只在阶段1~4有升学
+  if(stage >= 1 && stage <= 4 && !od[`school${stage}`]) {
+    startExam(stage-1); // SCHOOL_INFO下标对齐
     return;
   }
 
+  // 阶段主内容
   let html = `<div class="step-title">当前阶段：${stageName}</div>`;
   html += renderStageMain(stage);
 
-  // 阶段推进
   if(stage < STAGE_LIST.length-1) {
     html += `<button class="btn" onclick="advanceStage()">进入下一阶段</button>`;
   } else {
@@ -340,7 +302,7 @@ function renderLifeStage() {
   document.getElementById('game').innerHTML = html;
 }
 
-// 阶段主内容
+// 每阶段主内容
 function renderStageMain(idx) {
   let od = player.openData;
   switch(idx) {
@@ -372,6 +334,41 @@ function renderStageMain(idx) {
   }
 }
 
+// 升学/考试/志愿
+function startExam(schoolIdx) {
+  let od = player.openData;
+  let attrs = od.attributes || {};
+  let mainAttr = attrs["intelligence"] || 0;
+  let score = Math.floor(mainAttr*10 + Math.random()*40);
+  document.getElementById('game').innerHTML = `
+    <div style="font-size:2em;text-align:center;">📝</div>
+    <div class="step-title" style="text-align:center;">${STAGE_LIST[schoolIdx+1]} 升学考试</div>
+    <div id="exam-ani" style="text-align:center;font-size:1.1em;">考试中...</div>
+  `;
+  setTimeout(()=>{
+    document.getElementById('exam-ani').innerText = `考试结束，成绩：${score}分！`;
+    setTimeout(()=>{
+      chooseSchool(schoolIdx, score);
+    }, 900);
+  }, 1000);
+}
+function chooseSchool(schoolIdx, score) {
+  let schoolList = SCHOOL_INFO[schoolIdx];
+  let choices = schoolList.filter(s=>score>=s.min);
+  let html = `<div class="step-title">升学志愿 (${STAGE_LIST[schoolIdx+1]})</div>
+    <div>分数：<b>${score}</b>，可报考学校：</div>
+    <ul>${choices.map(s=>`<li>${s.name}（分数线${s.min}）
+      <button class="btn btn-small" onclick="confirmSchool(${schoolIdx+1},'${s.name}')">选择</button></li>`).join("")}</ul>`;
+  document.getElementById('game').innerHTML = html;
+}
+function confirmSchool(stage, name) {
+  let od = player.openData;
+  od[`school${stage}`] = name;
+  saveSaves();
+  alert(`你已选择：${name}`);
+  renderLifeStage();
+}
+
 // 推进阶段
 function advanceStage() {
   let od = player.openData;
@@ -382,42 +379,6 @@ function advanceStage() {
     time: Date.now()
   });
   saveSaves();
-  renderLifeStage();
-}
-
-// 升学/考试/志愿
-function startExam(stageIdx) {
-  let od = player.openData;
-  let attrs = od.attributes || {};
-  let attrKey = ["intelligence","intelligence","intelligence","intelligence","intelligence"];
-  let mainAttr = attrs[attrKey[stageIdx]] || 0;
-  let score = Math.floor(mainAttr*10 + Math.random()*40);
-  document.getElementById('game').innerHTML = `
-    <div style="font-size:2em;text-align:center;">📝</div>
-    <div class="step-title" style="text-align:center;">${STAGE_LIST[stageIdx]} 升学考试</div>
-    <div id="exam-ani" style="text-align:center;font-size:1.1em;">考试中...</div>
-  `;
-  setTimeout(()=>{
-    document.getElementById('exam-ani').innerText = `考试结束，成绩：${score}分！`;
-    setTimeout(()=>{
-      chooseSchool(stageIdx, score);
-    }, 900);
-  }, 1000);
-}
-function chooseSchool(stageIdx, score) {
-  let schoolList = SCHOOL_INFO[stageIdx];
-  let choices = schoolList.filter(s=>score>=s.min);
-  let html = `<div class="step-title">升学志愿 (${STAGE_LIST[stageIdx]}→${STAGE_LIST[stageIdx+1]})</div>
-    <div>分数：<b>${score}</b>，可报考学校：</div>
-    <ul>${choices.map(s=>`<li>${s.name}（分数线${s.min}）
-      <button class="btn btn-small" onclick="confirmSchool(${stageIdx},'${s.name}')">选择</button></li>`).join("")}</ul>`;
-  document.getElementById('game').innerHTML = html;
-}
-function confirmSchool(stageIdx, name) {
-  let od = player.openData;
-  od[`school${stageIdx+1}`] = name;
-  saveSaves();
-  alert(`你已选择：${name}`);
   renderLifeStage();
 }
 
@@ -743,4 +704,40 @@ function randomEvent() {
   saveSaves();
   alert("随机事件："+msg);
   exploreSociety();
+}
+
+// 导航函数全局挂载
+window.enterSave = enterSave;
+window.delSavePrompt = delSavePrompt;
+window.newSave = newSave;
+window.randomParents = randomParents;
+window.nextStep = nextStep;
+window.toggleTalent = toggleTalent;
+window.renderTalent = renderTalent;
+window.confirmTalent = confirmTalent;
+window.confirmAttr = confirmAttr;
+window.backHome = backHome;
+window.resetGame = function() {
+  if(!confirm("确定要重开本存档的人生吗？")) return;
+  player.stage = 'born';
+  player.openData = {};
+  saveSaves();
+  step = 'born';
+  renderBorn();
+}
+
+// 加载入口
+fetch('data.json')
+  .then(res => res.json())
+  .then(json => {
+    data = json;
+    renderHome();
+  });
+
+function nextStep(s) {
+  step = s;
+  if(s === 'parents') renderParents();
+  if(s === 'talent') renderTalent();
+  if(s === 'attr') renderAttr();
+  if(s === 'main') renderMainGame();
 }
