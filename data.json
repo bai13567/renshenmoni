@@ -10,4 +10,51 @@
   "news": [
     { "id": 1, "title": "经济向好，消费升级", "effect": "money+10000" }
   ]
+  "talents": [
+    { "id": 1, "name": "学霸", "desc": "学习能力大幅提升", "type": "史诗", "effect": { "intelligence": 3 } },
+    { "id": 2, "name": "富二代", "desc": "家境极好，初始金钱+20w", "type": "传说", "effect": { "money": 200000 } },
+    { "id": 3, "name": "美颜盛世", "desc": "天生丽质，颜值+5", "type": "超级", "effect": { "appearance": 5 } },
+    { "id": 4, "name": "健康体魄", "desc": "体质+5", "type": "普通", "effect": { "physique": 5 } },
+    { "id": 5, "name": "欧皇", "desc": "运气极佳，常遇好运", "type": "传说", "effect": { "luck": 5 } },
+    { "id": 6, "name": "小财神", "desc": "理财能力极强，赚到不少钱", "type": "史诗", "effect": { "money": 50000 } },
+    { "id": 7, "name": "体育健将", "desc": "体质极强，运动能力突出", "type": "史诗", "effect": { "physique": 4 } },
+    { "id": 8, "name": "颜艺大师", "desc": "极具表现力，颜值+2，社交力提升", "type": "超级", "effect": { "appearance": 2, "family": 1 } },
+    { "id": 9, "name": "直觉灵敏", "desc": "总能发现机会，运气+2", "type": "普通", "effect": { "luck": 2 } },
+    { "id": 10, "name": "高情商", "desc": "擅长与人交往，家境+2", "type": "普通", "effect": { "family": 2 } },
+    { "id": 11, "name": "自律达人", "desc": "善于规划人生，智商+1，体质+1", "type": "普通", "effect": { "intelligence": 1, "physique": 1 } },
+    { "id": 12, "name": "音乐天赋", "desc": "音乐细胞爆棚，容易受到关注", "type": "超级", "effect": { "appearance": 1, "luck": 1 } },
+    { "id": 13, "name": "数学天才", "desc": "数学极强，智商+2", "type": "史诗", "effect": { "intelligence": 2 } },
+    { "id": 14, "name": "好运气", "desc": "偶尔能中大奖", "type": "普通", "effect": { "luck": 1 } },
+    { "id": 15, "name": "坚韧不拔", "desc": "百折不挠，体质+1，智商+1", "type": "普通", "effect": { "physique": 1, "intelligence": 1 } },
+    { "id": 16, "name": "科技迷", "desc": "对科技有天然兴趣，智商+2", "type": "普通", "effect": { "intelligence": 2 } },
+    { "id": 17, "name": "宠物缘", "desc": "动物特别喜欢你", "type": "普通", "effect": { "luck": 1 } },
+    { "id": 18, "name": "健康饮食", "desc": "饮食习惯好，体质+1", "type": "普通", "effect": { "physique": 1 } },
+    { "id": 19, "name": "多才多艺", "desc": "技能面广，智商+1，颜值+1", "type": "普通", "effect": { "intelligence": 1, "appearance": 1 } },
+    { "id": 20, "name": "开朗乐观", "desc": "乐观向上，运气+1", "type": "普通", "effect": { "luck": 1 } },
+    { "id": 21, "name": "豪门遗孤", "desc": "家族遗产庞大，家境+5，金钱+10w", "type": "传说", "effect": { "family": 5, "money": 100000 } },
+    { "id": 22, "name": "自学成才", "desc": "自学能力极强，智商+3", "type": "史诗", "effect": { "intelligence": 3 } },
+    { "id": 23, "name": "极致专注", "desc": "超高专注力，学习、工作效率提升", "type": "超级", "effect": { "intelligence": 2, "luck": 1 } },
+    { "id": 24, "name": "颜值逆天", "desc": "颜值+6，成为校园红人", "type": "传说", "effect": { "appearance": 6 } },
+    { "id": 25, "name": "聪慧过人", "desc": "智商+4", "type": "超级", "effect": { "intelligence": 4 } },
+    { "id": 26, "name": "超级幸运星", "desc": "运气+8，超高机遇", "type": "传说", "effect": { "luck": 8 } },
+    { "id": 27, "name": "艺术细胞", "desc": "艺术气质突出，颜值+2", "type": "普通", "effect": { "appearance": 2 } },
+    { "id": 28, "name": "百病不侵", "desc": "体质+7，极难生病", "type": "传说", "effect": { "physique": 7 } },
+    { "id": 29, "name": "天赋平平", "desc": "无特别天赋", "type": "普通", "effect": { } }
+  ],
+  "parents": [
+    { "father": "国企高管", "mother": "大学教授", "family_income": "极高", "desc": "家庭地位显赫，资源丰富" },
+    { "father": "公务员", "mother": "医生", "family_income": "高", "desc": "生活无忧，父母能提供良好教育资源" },
+    { "father": "企业主", "mother": "全职太太", "family_income": "高", "desc": "家中资产充足，生活富裕" },
+    { "father": "公司白领", "mother": "小学老师", "family_income": "中高", "desc": "生活稳定，重视教育" },
+    { "father": "工厂工人", "mother": "护士", "family_income": "中", "desc": "生活平稳，温馨有爱" },
+    { "father": "出租车司机", "mother": "商场营业员", "family_income": "中", "desc": "生活小康，父母辛勤工作" },
+    { "father": "厨师", "mother": "服务员", "family_income": "中", "desc": "家常生活，有烟火气息" },
+    { "father": "农民", "mother": "农民", "family_income": "低", "desc": "家庭简朴，勤劳朴实" },
+    { "father": "快递员", "mother": "保洁员", "family_income": "低", "desc": "家庭条件较差，但乐观向上" },
+    { "father": "外卖员", "mother": "超市收银员", "family_income": "低", "desc": "生活较为拮据，但温馨有爱" },
+    { "father": "设计师", "mother": "银行职员", "family_income": "中高", "desc": "家境小康，注重素质教育" },
+    { "father": "作家", "mother": "音乐老师", "family_income": "中", "desc": "文化氛围浓厚，艺术环境" },
+    { "father": "科研人员", "mother": "律师", "family_income": "高", "desc": "家教严格，学业压力大" },
+    { "father": "失业", "mother": "临时工", "family_income": "极低", "desc": "家庭拮据，环境艰苦" }
+  ]
 }
