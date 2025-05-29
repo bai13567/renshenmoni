@@ -1,1 +1,13 @@
-
+{
+  "items": [
+    { "id": 1, "name": "豪车", "price": 500000, "desc": "提升身份，增加心情", "mood": 30 },
+    { "id": 2, "name": "环球旅游", "price": 80000, "desc": "开阔视野，放松心情", "mood": 20 }
+  ],
+  "girls": [
+    { "id": 1, "name": "小雅", "desc": "温柔知性", "favor": 0 },
+    { "id": 2, "name": "思思", "desc": "活泼可爱", "favor": 0 }
+  ],
+  "news": [
+    { "id": 1, "title": "经济向好，消费升级", "effect": "money+10000" }
+  ]
+}
