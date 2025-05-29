@@ -1,45 +1,30 @@
-// ========== 基础数据 ==========
+let data = { items: [], girls: [], news: [] };
+let saves = {};      // 所有存档
+let currentSave = ""; // 当前激活存档名
+let player = null;
 
-let data = { items: [], girls: [], news: [] }; // 后面异步加载
-let saves = {}; // 所有存档
-let currentSave = null; // 当前激活的存档名
-let player = null; // 当前玩家数据
-
-// ========== 存档管理 ==========
-
+// --- 存档管理 ---
 function loadSaves() {
   saves = JSON.parse(localStorage.getItem('renshenmoni_saves') || '{}');
 }
-
 function saveSaves() {
   localStorage.setItem('renshenmoni_saves', JSON.stringify(saves));
 }
-
 function createSave(name) {
   if (!name || saves[name]) return false;
   saves[name] = {
     player: { name: name, money: 100000, mood: 60 },
-    girls: JSON.parse(JSON.stringify(data.girls)) // 深拷贝
+    girls: JSON.parse(JSON.stringify(data.girls))
   };
   saveSaves();
   return true;
 }
-
 function deleteSave(name) {
   delete saves[name];
   saveSaves();
 }
 
-function loadSave(name) {
-  currentSave = name;
-  player = saves[name].player;
-  // girls是每个存档独立进度
-  data.girls = saves[name].girls;
-}
-
-// ========== 页面渲染 ==========
-
-// 主界面/存档选择
+// --- 界面渲染 ---
 function renderHome() {
   loadSaves();
   let html = `<h2>请选择存档</h2><ul>`;
@@ -57,11 +42,15 @@ function renderHome() {
     <div style="color:#888;">Tips: 你可以建多个不同人生的存档，切换体验不同人生轨迹！</div>
   `;
   document.getElementById('game').innerHTML = html;
+  currentSave = ""; // 重点：始终回到主界面时清空当前存档
 }
 
-// 进入某个存档
+// 进入存档（只有点按钮才进！）
 function enterGame(name) {
-  loadSave(name);
+  currentSave = name;
+  player = saves[name].player;
+  // girls是每个存档独立进度
+  data.girls = JSON.parse(JSON.stringify(saves[name].girls));
   renderGame();
 }
 
@@ -69,7 +58,6 @@ function enterGame(name) {
 function delSave(name) {
   if (confirm('确定要删除存档 "' + name + '" 吗？此操作不可恢复。')) {
     deleteSave(name);
-    if (currentSave === name) currentSave = null;
     renderHome();
   }
 }
@@ -128,7 +116,6 @@ function saveCurrent() {
 
 // 返回主界面（存档选择）
 function backHome() {
-  currentSave = null;
   renderHome();
 }
 
@@ -158,12 +145,12 @@ function dateGirl(i) {
   renderGame();
 }
 
-// ========== 加载数据并初始化 ==========
+// === 数据加载与初始化 ===
 fetch('data.json')
   .then(res => res.json())
   .then(json => {
     data = json;
-    renderHome();
+    renderHome(); // 一定先显示存档选择
   });
 
 window.newSave = newSave;
